@@ -52,6 +52,9 @@ struct MainTabView: View {
                 systemImage: "gearshape.2",
                 value: Tabs.settings
             ) {
+                NavigationStack {
+                    SettingsView()
+                }
             }
         }
         .tint(AppTheme.Colors.adaptiveBlack)
