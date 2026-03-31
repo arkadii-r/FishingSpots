@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FishingSpot: Identifiable {
+struct FishingSpot: Identifiable, Equatable {
     let name: String
     let location: String
     let latitude: Double

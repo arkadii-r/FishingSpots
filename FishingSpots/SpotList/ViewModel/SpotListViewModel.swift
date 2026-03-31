@@ -50,4 +50,8 @@ final class SpotListViewModel {
     ]
     
     var spotDetail: FishingSpot?
+    
+    func deleteSpot(_ spot: FishingSpot) {
+        spots.removeAll { $0.id == spot.id }
+    }
 }
