@@ -12,6 +12,9 @@ import UIKit
 
 @Observable
 final class SettingsViewModel {
+    @ObservationIgnored
+    @Injected(\.authService) private var authService
+
     let username: String?
     let userEmail: String?
     var logoutErrorAlertText: String?
@@ -46,9 +49,8 @@ final class SettingsViewModel {
     }
     
     func signOut() {
-        do {
-            try Auth.auth().signOut()
-        } catch {
+        let result = authService.logout()
+        if case .failure(let error) = result {
             logoutErrorAlertText = error.localizedDescription
         }
     }

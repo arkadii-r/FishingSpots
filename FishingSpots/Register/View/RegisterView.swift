@@ -145,5 +145,5 @@ private extension RegisterView {
 }
 
 #Preview {
-    RegisterView(viewModel: .init(authService: AuthService()))
+    RegisterView(viewModel: .init())
 }

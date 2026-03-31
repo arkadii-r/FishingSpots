@@ -30,4 +30,13 @@ final class AuthService {
             return .failure(error)
         }
     }
+    
+    func logout() -> Result<Void, Error> {
+        do {
+            try Auth.auth().signOut()
+            return .success(())
+        } catch {
+            return .failure(error)
+        }
+    }
 }

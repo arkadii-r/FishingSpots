@@ -42,7 +42,7 @@ struct LoginView: View {
             .disabled(viewModel.isLoadingAuth)
             .sheet(isPresented: $viewModel.registerSheetShown) {
                 NavigationStack {
-                    RegisterView(viewModel: .init(authService: AuthService()))
+                    RegisterView(viewModel: .init())
                         .navigationTitle(Constant.Button.signUp)
                         .navigationBarTitleDisplayMode(.inline)
                 }
@@ -97,5 +97,5 @@ private extension LoginView {
 }
 
 #Preview {
-    LoginView(viewModel: .init(authService: AuthService()))
+    LoginView(viewModel: .init())
 }

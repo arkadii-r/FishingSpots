@@ -15,7 +15,7 @@ struct AppView: View {
         VStack {
             switch viewModel.appState {
             case .login:
-                EmptyView()
+                LoginView(viewModel: .init())
                 
             case .main:
                 MainTabView()

@@ -16,7 +16,8 @@ private struct Constant {
 
 @Observable
 class RegisterViewModel {
-    private let authService: AuthService
+    @ObservationIgnored
+    @Injected(\.authService) private var authService
     
     var usernameText: String = ""
     var emailText: String = ""
@@ -28,9 +29,7 @@ class RegisterViewModel {
         !usernameText.isEmpty && emailText.isValidEmail && !passwordText.isEmpty
     }
     
-    init(authService: AuthService) {
-        self.authService = authService
-    }
+    init() {}
         
     func signup() {
         errorText = nil
