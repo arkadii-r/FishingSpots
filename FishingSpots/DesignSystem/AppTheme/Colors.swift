@@ -18,6 +18,8 @@ extension AppTheme {
         
         /// hex: #666E3B
         public static let fsPrimaryGreen = Color(hex: "#666E3B")
+        /// hex: #C2AE6F
+        public static let fsSecondaryGreen = Color(hex: "#C2AE6F")
         
         public static let gray = Color.gray
         /// hex: #E5E7EB
