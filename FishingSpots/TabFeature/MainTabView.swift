@@ -30,6 +30,9 @@ struct MainTabView: View {
             Tab(
                 value: Tabs.list,
                 content: {
+                    NavigationStack {
+                        SpotListView(viewModel: .init())
+                    }
                 },
                 label: {
                     Text(Constant.Tab.spotList)

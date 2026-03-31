@@ -33,9 +33,6 @@ extension AppTheme {
         public static let green = Color(hex: "#51B272")
         /// hex: #C31E1E
         public static let red = Color(hex: "#C31E1E")
-        
-        /// hex: #6B7280
-        public static let contentSecondary = Color(hex: "#6B7280")
 
         /// hex: #F2F3F5
         public static let backgroundGray = Color(uiColor: .secondarySystemBackground)

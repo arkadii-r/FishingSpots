@@ -7,9 +7,16 @@
 
 import Foundation
 
-struct CatchReport {
+struct CatchReport: Identifiable {
     let fish: String
+    let weight: Double
     let count: Int
-    let photo: URL?
+    let photoURL: URL?
     let date: String
+    
+    let id: UUID = UUID()
+    
+    var weightString: String {
+        return "\(String(format: "%.2f", weight)) KG"
+    }
 }

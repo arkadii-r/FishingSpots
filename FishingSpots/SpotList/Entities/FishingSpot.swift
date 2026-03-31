@@ -12,11 +12,15 @@ struct FishingSpot: Identifiable {
     let location: String
     let latitude: Double
     let longitude: Double
-    let catches: [CatchReport]
+    let catchReports: [CatchReport]
     
     let id: String = UUID().uuidString
     
+    var coordinatesString: String {
+        "\(latitude), \(longitude)"
+    }
+    
     var catchCount: String {
-        String(catches.reduce(0) { $0 + $1.count })
+        String(catchReports.reduce(0) { $0 + $1.count })
     }
 }

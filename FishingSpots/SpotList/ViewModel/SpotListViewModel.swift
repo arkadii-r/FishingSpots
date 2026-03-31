@@ -10,9 +10,44 @@ import Observation
 
 @Observable
 final class SpotListViewModel {
-    var spots: [FishingSpot] = [.init(name: "Ladoga", location: "Ladoga lake", latitude: 30.1232, longitude: 40.3242, catches: [.init(fish: "pike", count: 1, photo: nil, date: ""), .init(fish: "pidske", count: 3, photo: nil, date: "")]),
-                                .init(name: "Vuoksa", location: "Vuoksa lake", latitude: 30.1232, longitude: 40.3242, catches: []),
-                                .init(name: "Vyborg", location: "Vyborg lake", latitude: 30.1232, longitude: 40.3242, catches: [])
+    var spots: [FishingSpot] = [
+        .init(
+            name: "Salt Lake",
+            location: "Salt Lake City, USA",
+            latitude: 30.1232,
+            longitude: 40.3242,
+            catchReports: [
+                .init(
+                    fish: "Pike",
+                    weight: 3.14,
+                    count: 1,
+                    photoURL: nil,
+                    date: ""
+                ),
+                .init(
+                    fish: "Bass",
+                    weight: 4.71,
+                    count: 3,
+                    photoURL: nil,
+                    date: ""
+                )
+            ]
+        ),
+        .init(
+            name: "Vuoksa",
+            location: "Vuoksa River, Finland",
+            latitude: 30.1232,
+            longitude: 40.3242,
+            catchReports: []
+        ),
+        .init(
+            name: "Sevan",
+            location: "Sevan, Armenia",
+            latitude: 30.1232,
+            longitude: 40.3242,
+            catchReports: []
+        )
     ]
+    
     var spotDetail: FishingSpot?
 }

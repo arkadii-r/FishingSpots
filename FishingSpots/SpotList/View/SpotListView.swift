@@ -28,9 +28,6 @@ struct SpotListView: View {
     var body: some View {
         contentView
             .navigationTitle(Constant.navigationTitle)
-            .sheet(item: $viewModel.spotDetail) { spot in
-                Text(spot.name)
-            }
     }
 }
 
@@ -39,11 +36,13 @@ private extension SpotListView {
         ScrollView {
             LazyVStack(spacing: 16) {
                 ForEach(viewModel.spots) { spot in
-                    spotCardView(for: spot)
-                        .contentShape(.rect)
-                        .onTapGesture {
-                            viewModel.spotDetail = spot
-                        }
+                    NavigationLink {
+                        SpotDetailView(viewModel: .init(spot: spot))
+                            .toolbar(.hidden, for: .tabBar)
+                    } label: {
+                        spotCardView(for: spot)
+                    }
+                    .buttonStyle(.tapStyle)
                 }
             }
             .padding()
@@ -78,7 +77,7 @@ private extension SpotListView {
                     
                     VStack(alignment: .trailing, spacing: .zero) {
                         Text(Constant.Text.coordinates)
-                        Text("\(spot.latitude), \(spot.longitude)")
+                        Text(spot.coordinatesString)
                     }
                     .foregroundColor(AppTheme.Colors.black)
                     .font(AppTheme.Fonts.bodyS.monospaced())
@@ -86,16 +85,7 @@ private extension SpotListView {
             }
         }
         .padding()
-        .background(
-            LinearGradient(
-                stops: [
-                    .init(color: AppTheme.Colors.fsPrimaryGreen, location: 0.45),
-                    .init(color: AppTheme.Colors.fsSecondaryGreen, location: 0.95)
-                ],
-                startPoint: .leading,
-                endPoint: .trailing
-            )
-        )
+        .background(FSBackgroundGradientView())
         .cornerRadius(16)
         .background(
             RoundedRectangle(cornerRadius: 16)
