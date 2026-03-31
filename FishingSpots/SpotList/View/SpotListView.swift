@@ -38,7 +38,6 @@ private extension SpotListView {
                 ForEach(viewModel.spots) { spot in
                     NavigationLink {
                         SpotDetailView(viewModel: .init(spot: spot))
-                            .toolbar(.hidden, for: .tabBar)
                     } label: {
                         spotCardView(for: spot)
                     }

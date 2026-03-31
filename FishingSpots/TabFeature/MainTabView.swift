@@ -43,6 +43,8 @@ struct MainTabView: View {
             Tab(
                 value: Tabs.map,
                 content: {
+                    MapView(viewModel: .init())
+                        .ignoresSafeArea()
                 },
                 label: {
                     Text(Constant.Tab.map)

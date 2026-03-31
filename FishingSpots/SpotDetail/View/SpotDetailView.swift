@@ -14,6 +14,7 @@ private struct Constant {
         static let coordinates = "Coordinates"
         static let catchReports = "Catch Reports"
         static let emptyReports = "No catch reports yet"
+        static let weight = "WEIGHT: "
     }
     
     struct Button {
@@ -33,6 +34,7 @@ struct SpotDetailView: View {
             .background(FSBackgroundGradientView().ignoresSafeArea())
             .navigationTitle(viewModel.spot.name)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarVisibility(.hidden, for: .tabBar)
     }
 }
 
@@ -116,8 +118,10 @@ private extension SpotDetailView {
                         ForEach(viewModel.spot.catchReports) { report in
                             reportCardView(for: report)
                             
-                            Divider()
-                                .padding(.horizontal)
+                            if viewModel.spot.catchReports.last != report {
+                                Divider()
+                                    .padding(.horizontal)
+                            }
                         }
                     } else {
                         Text(Constant.Text.emptyReports)
@@ -130,6 +134,7 @@ private extension SpotDetailView {
                 .background(AppTheme.Colors.backgroundGray)
                 .cornerRadius(16)
             }
+            .cornerRadius(16)
         }
     }
     
@@ -150,7 +155,7 @@ private extension SpotDetailView {
                 Text("\(report.fish) x\(report.count)")
                     .font(AppTheme.Fonts.calloutBold)
                 
-                Text("WEIGHT: \(report.weightString)")
+                Text(Constant.Text.weight + report.weightString)
                     .font(AppTheme.Fonts.bodyS)
             }
             .foregroundColor(AppTheme.Colors.black)

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CatchReport: Identifiable {
+struct CatchReport: Identifiable, Equatable {
     let fish: String
     let weight: Double
     let count: Int
