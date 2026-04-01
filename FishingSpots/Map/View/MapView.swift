@@ -81,8 +81,8 @@ private extension MapView {
             case let .marker(marker):
                 Text(marker.title ?? "\(marker.position.latitude), \(marker.position.longitude)")
                     .foregroundColor(AppTheme.Colors.black)
-                    .font(AppTheme.Fonts.calloutBold)
-                
+                    .font(AppTheme.Fonts.header3Bold)
+
                 Button(Constant.Button.showSpotDetails) {
                     viewModel.showSpotDetail(marker: marker)
                 }

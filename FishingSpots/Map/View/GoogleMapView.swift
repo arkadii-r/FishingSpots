@@ -11,51 +11,53 @@ import GoogleMaps
 
 struct GoogleMapView: UIViewRepresentable {
     
-   private var markers: [GMSMarker]
-   private let mapType: GMSMapViewType
-   
-   @Binding var camera: GMSCameraPosition?
+    private var markers: [GMSMarker]
+    private let mapType: GMSMapViewType
+    
+    @State var selectedCoordinateMarker: GMSMarker?
+    @Binding var camera: GMSCameraPosition?
     
     private let tapHandler: (CLLocationCoordinate2D) -> Void
     private let markerTapHandler: (GMSMarker) -> Bool
-   
-   init(
-    markers: [GMSMarker] = [],
-    mapType: GMSMapViewType = .normal,
-    camera: Binding<GMSCameraPosition?>,
-    tapHandler: @escaping (CLLocationCoordinate2D) -> Void,
-    markerTapHandler: @escaping (GMSMarker) -> Bool
     
-   ) {
-       self.markers = markers
-       self.mapType = mapType
-       self._camera = camera
-       self.tapHandler = tapHandler
-       self.markerTapHandler = markerTapHandler
-   }
-   
-   func makeUIView(context: Context) -> GMSMapView {
-       let mapView = GMSMapView()
-       mapView.mapType = mapType
-       mapView.delegate = context.coordinator
-             
-       return mapView
-   }
-   
-   func updateUIView(_ uiView: GMSMapView, context: Context) {
-       if let camera = camera {
-           uiView.camera = camera
-       }
-       
-       uiView.clear()
-       
-       markers.forEach { marker in
-           marker.icon = UIImage(resource: .hookedFish)
-           marker.map = uiView
-       }
-       
-       uiView.mapType = mapType
-   }
+    init(
+        markers: [GMSMarker] = [],
+        mapType: GMSMapViewType = .normal,
+        camera: Binding<GMSCameraPosition?>,
+        tapHandler: @escaping (CLLocationCoordinate2D) -> Void,
+        markerTapHandler: @escaping (GMSMarker) -> Bool
+        
+    ) {
+        self.markers = markers
+        self.mapType = mapType
+        self._camera = camera
+        self.tapHandler = tapHandler
+        self.markerTapHandler = markerTapHandler
+    }
+    
+    func makeUIView(context: Context) -> GMSMapView {
+        let mapView = GMSMapView()
+        mapView.mapType = mapType
+        mapView.delegate = context.coordinator
+        
+        return mapView
+    }
+    
+    func updateUIView(_ uiView: GMSMapView, context: Context) {
+        if let camera = camera {
+            uiView.camera = camera
+        }
+        
+        uiView.clear()
+        
+        markers.forEach { marker in
+            marker.icon = UIImage(resource: .hookedFish)
+            marker.map = uiView
+        }
+        selectedCoordinateMarker?.map = uiView
+        
+        uiView.mapType = mapType
+    }
     
     func makeCoordinator() -> GoogleMapViewCoordinator {
         return GoogleMapViewCoordinator(self)
@@ -71,13 +73,15 @@ struct GoogleMapView: UIViewRepresentable {
         
         func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
             self.mapView.camera = nil
-
         }
         
         func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+            self.mapView.selectedCoordinateMarker = GMSMarker(position: coordinate)
             self.mapView.tapHandler(coordinate)
         }
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+            guard self.mapView.markers.contains(where: { $0.position == marker.position }) else { return false }
+            self.mapView.selectedCoordinateMarker = nil
             return self.mapView.markerTapHandler(marker)
         }
         
@@ -86,7 +90,7 @@ struct GoogleMapView: UIViewRepresentable {
 
 
 extension GoogleMapView {
-
+    
     func mapType(_ type: GMSMapViewType) -> GoogleMapView {
         GoogleMapView(markers: markers, mapType: type, camera: $camera, tapHandler: tapHandler, markerTapHandler: markerTapHandler)
     }
@@ -96,5 +100,12 @@ extension GoogleMapView {
         view.markers = markers
         return view
     }
+    
+}
 
+
+extension CLLocationCoordinate2D: @retroactive Equatable {
+    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
+    }
 }
