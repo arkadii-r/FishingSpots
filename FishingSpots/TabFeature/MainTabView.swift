@@ -23,15 +23,16 @@ struct MainTabView: View {
         case settings
     }
     
-    @State var selection: Tabs = .list
+    @State var coordinator: TabCoordinator = .init()
     
     var body: some View {
-        TabView(selection: $selection) {
+        TabView(selection: $coordinator.selection) {
             Tab(
-                value: Tabs.list,
+                value: TabCoordinator.Tabs.list,
                 content: {
                     NavigationStack {
                         SpotListView(viewModel: .init())
+                            .environment(coordinator)
                     }
                 },
                 label: {
@@ -41,7 +42,7 @@ struct MainTabView: View {
             )
             
             Tab(
-                value: Tabs.map,
+                value: TabCoordinator.Tabs.map,
                 content: {
                     MapView(viewModel: .init())
                         .ignoresSafeArea()
@@ -55,7 +56,7 @@ struct MainTabView: View {
             Tab(
                 Constant.Tab.settings,
                 systemImage: "gearshape.2",
-                value: Tabs.settings
+                value: TabCoordinator.Tabs.settings,
             ) {
                 NavigationStack {
                     SettingsView()

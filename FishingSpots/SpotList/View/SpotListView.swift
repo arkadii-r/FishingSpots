@@ -13,6 +13,8 @@ private struct Constant {
 
 struct SpotListView: View {
     @State private var viewModel: SpotListViewModel
+    @Environment(TabCoordinator.self) private var tabCoordinator
+
     
     init(viewModel: SpotListViewModel) {
         self.viewModel = viewModel
@@ -24,7 +26,7 @@ struct SpotListView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        // TODO: ADD SPOT
+                        tabCoordinator.selection = .map
                     } label: {
                         Image(systemName: "plus.circle.fill")
                             .font(AppTheme.Fonts.header1)
