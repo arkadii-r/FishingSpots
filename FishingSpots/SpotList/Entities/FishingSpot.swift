@@ -8,8 +8,8 @@
 import Foundation
 
 struct FishingSpot: Identifiable, Equatable {
-    let name: String
-    let location: String
+    var name: String
+    var location: String
     let latitude: Double
     let longitude: Double
     let catchReports: [CatchReport]
@@ -22,5 +22,31 @@ struct FishingSpot: Identifiable, Equatable {
     
     var catchCount: String {
         String(catchReports.reduce(0) { $0 + $1.count })
+    }
+    
+    init(
+        name: String,
+        location: String,
+        latitude: Double,
+        longitude: Double,
+        catchReports: [CatchReport]
+    ) {
+        self.name = name
+        self.location = location
+        self.latitude = latitude
+        self.longitude = longitude
+        self.catchReports = catchReports
+    }
+    
+    init(
+        location: String,
+        latitude: Double,
+        longitude: Double
+    ) {
+        self.name = ""
+        self.location = location
+        self.latitude = latitude
+        self.longitude = longitude
+        self.catchReports = []
     }
 }

@@ -20,7 +20,8 @@ final class MapViewModel {
     var spots: [FishingSpot] = [.init(name: "Lake", location: "Lake", latitude: 60.388581, longitude: 28.915037, catchReports: [])]
     var selectedLocation: LocationType?
     var spotDetail: FishingSpot?
-    var isLoadingAdding: Bool = false
+    var isLoadingLocationAddress: Bool = false
+    var newSpot: FishingSpot?
     
     var markers: [GMSMarker] {
         spots.map {
@@ -33,12 +34,17 @@ final class MapViewModel {
     func addSpot(at coordinate: CLLocationCoordinate2D) {
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         if let request = MKReverseGeocodingRequest(location: location) {
-            isLoadingAdding = true
+            isLoadingLocationAddress = true
             Task {
                 let mapitems = try? await request.mapItems
-                isLoadingAdding = false
+                isLoadingLocationAddress = false
                 if let mapitem = mapitems?.first {
-//                    let sda = mapitem.addressRepresentations?.cityWithContext(.full)
+                    let address = mapitem.addressRepresentations?.cityWithContext(.full)
+                    self.newSpot = .init(
+                        location: address ?? "",
+                        latitude: coordinate.latitude,
+                        longitude: coordinate.longitude
+                    )
                 }
             }
         }

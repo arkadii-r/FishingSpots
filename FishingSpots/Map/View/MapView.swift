@@ -55,6 +55,20 @@ struct MapView: View {
                 SpotDetailView(viewModel: .init(spot: spot))
             }
         }
+        .sheet(item: $viewModel.newSpot) { newSpot in
+            AddSpotView(viewModel: .init(newSpot: newSpot))
+                .presentationBackground(
+                    LinearGradient(
+                        colors:[
+                            AppTheme.Colors.fsPrimaryGreen,
+                            AppTheme.Colors.fsSecondaryGreen
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .presentationDetents([.medium])
+        }
     }
 }
 
@@ -63,9 +77,7 @@ private extension MapView {
         VStack(alignment: .leading, spacing: 20) {
             switch viewModel.selectedLocation {
             case let .coordinate(coordinate):
-                Text("\(coordinate.latitude), \(coordinate.longitude)")
-                    .foregroundColor(AppTheme.Colors.black)
-                    .font(AppTheme.Fonts.header3Bold)
+                selectionTitleView(title: coordinate.coordinateString)
                 
                 Button(Constant.Button.addSpot) {
                     viewModel.addSpot(at: coordinate)
@@ -74,15 +86,13 @@ private extension MapView {
                     .fsButton(
                         .primary,
                         size: .small,
-                        isLoading: viewModel.isLoadingAdding
+                        isLoading: viewModel.isLoadingLocationAddress
                     )
                 )
                 
             case let .marker(marker):
-                Text(marker.title ?? "\(marker.position.latitude), \(marker.position.longitude)")
-                    .foregroundColor(AppTheme.Colors.black)
-                    .font(AppTheme.Fonts.header3Bold)
-
+                selectionTitleView(title: marker.title ?? marker.position.coordinateString)
+                
                 Button(Constant.Button.showSpotDetails) {
                     viewModel.showSpotDetail(marker: marker)
                 }
@@ -92,19 +102,26 @@ private extension MapView {
                 EmptyView()
             }
         }
-        .overlay(alignment: .topTrailing) {
-            Image(systemName: "magnifyingglass")
-                .resizable()
-                .frame(width: 25, height: 25)
-                .onTapGesture {
-                    if let cameraPosition = viewModel.getCameraPosition() {
-                        camera = cameraPosition
-                    }
-                }
-        }
         .padding()
-        .background(AppTheme.Colors.fsSecondaryGreen.opacity(0.9))
-        .cornerRadius(20)
+        .background(.clear)
+    }
+    
+    func selectionTitleView(title: String) -> some View {
+        HStack(spacing: 10) {
+            Text(title)
+                .foregroundColor(AppTheme.Colors.black)
+                .font(AppTheme.Fonts.header3Bold)
+            
+            Image(systemName: "plus.magnifyingglass")
+                .resizable()
+                .frame(width: 24, height: 24)
+        }
+        .contentShape(.rect)
+        .onTapGesture {
+            if let cameraPosition = viewModel.getCameraPosition() {
+                camera = cameraPosition
+            }
+        }
     }
 }
 
