@@ -21,13 +21,12 @@ final class MapViewModel {
     @ObservationIgnored
     @Injected(\.spotsRepository) var spotsRepository
     
-    private var spots: [FishingSpot] = []
+    var markers: [GMSMarker] = []
     var selectedLocation: LocationType?
     var spotDetail: FishingSpot?
     var isLoadingLocationAddress: Bool = false
     var newSpot: FishingSpot?
     
-    var markers: [GMSMarker] = []
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -35,7 +34,11 @@ final class MapViewModel {
         self.spotsRepository.spots
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { spots in
-                self.spots = spots
+                self.markers = spots.map {
+                    let marker = GMSMarker(position: .init(latitude: $0.latitude, longitude: $0.longitude))
+                    marker.title = $0.name
+                    return marker
+                }
             })
             .store(in: &cancellables)
         
@@ -74,7 +77,7 @@ final class MapViewModel {
     }
     
     func showSpotDetail(marker: GMSMarker) {
-        guard let spot = spots.first(where: { $0.latitude == marker.position.latitude && $0.longitude == marker.position.longitude }) else { return }
+        guard let spot = spotsRepository.spots.value.first(where: { $0.latitude == marker.position.latitude && $0.longitude == marker.position.longitude }) else { return }
         spotDetail = spot
     }
     

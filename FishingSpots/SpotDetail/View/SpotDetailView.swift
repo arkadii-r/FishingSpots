@@ -194,7 +194,8 @@ private extension SpotDetailView {
                                     photoURL: nil,
                                     date: "18:00, 23 April 2024"
                                 )
-                        ]
+                            ],
+                            createdAt: .now
                     )
                 )
         )

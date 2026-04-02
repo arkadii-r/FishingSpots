@@ -21,7 +21,9 @@ final class SpotsRepository {
     }
     
     func bindSpotsListener() {
-        store.collection(path)
+        store
+            .collection(path)
+            .order(by: "createdAt", descending: false)
             .addSnapshotListener { (querySnapshot, error) in
                 guard let snapshot = querySnapshot else {
                     return
