@@ -34,7 +34,7 @@ struct MapView: View {
     }
     var body: some View {
         GoogleMapView(
-            markers: viewModel.markers,
+            markers: $viewModel.markers,
             camera: $camera,
             tapHandler: { coordinate in
                 viewModel.selectedLocation = .coordinate(coordinate)
@@ -49,6 +49,9 @@ struct MapView: View {
                 .padding(.horizontal)
                 .padding(.bottom, 120)
                 .isHidden(viewModel.selectedLocation == nil)
+        }
+        .onAppear {
+            viewModel.onAppear()
         }
         .sheet(item: $viewModel.spotDetail) { spot in
             NavigationStack {

@@ -21,6 +21,7 @@ private struct Constant {
 
 struct AddSpotView: View {
     @State private var viewModel: AddSpotViewModel
+    @FocusState var nameFieldFocused: Bool
     
     init(viewModel: AddSpotViewModel) {
         self.viewModel = viewModel
@@ -38,6 +39,7 @@ struct AddSpotView: View {
                     validate: !viewModel.newSpot.name.isEmpty,
                     maxSymbols: 30
                 )
+                .focused($nameFieldFocused)
                 
                 FSTextField(
                     label: Constant.Text.location,
@@ -45,13 +47,25 @@ struct AddSpotView: View {
                 )
             }
             
-            Button(Constant.Button.add) {
-                viewModel.addSpot()
+            VStack(spacing: 16) {
+                Button(Constant.Button.add) {
+                    viewModel.addSpot()
+                }
+                .buttonStyle(.fsButton(.primary, isLoading: viewModel.isLoadingAddButton))
+                .disabled(!viewModel.addButtonEnabled)
+                
+                if let errorText = viewModel.addingErrorText {
+                    Text(errorText)
+                        .foregroundColor(.red)
+                }
             }
-            .buttonStyle(.fsButton(.primary, isLoading: viewModel.isLoadingAddButton))
-            .disabled(!viewModel.addButtonEnabled)
         }
         .padding([.horizontal, .bottom])
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                nameFieldFocused = true
+            }
+        }
     }
 }
 

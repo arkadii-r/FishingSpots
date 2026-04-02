@@ -7,11 +7,16 @@
 
 import Foundation
 import Observation
+import FirebaseFirestore
 
 @Observable
 final class AddSpotViewModel {
+    @ObservationIgnored
+    @Injected(\.spotsRepository) var spotsRepository
+    
     var newSpot: FishingSpot
     var isLoadingAddButton: Bool = false
+    var addingErrorText: String?
     
     var addButtonEnabled: Bool {
         !newSpot.name.isEmpty
@@ -24,7 +29,16 @@ final class AddSpotViewModel {
     }
     
     func addSpot() {
+        addingErrorText = nil
         isLoadingAddButton = true
-        isLoadingAddButton = false
+        Task {
+            do {
+                try await spotsRepository.addSpot(newSpot)
+                isLoadingAddButton = false
+            } catch {
+                isLoadingAddButton = false
+                addingErrorText = error.localizedDescription
+            }
+        }
     }
 }

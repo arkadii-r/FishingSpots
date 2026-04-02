@@ -6,16 +6,16 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
-struct CatchReport: Identifiable, Equatable {
+struct CatchReport: Identifiable, Equatable, Codable {
+    @DocumentID var id: String?
     let fish: String
     let weight: Double
     let count: Int
     let photoURL: URL?
     let date: String
-    
-    let id: UUID = UUID()
-    
+        
     var weightString: String {
         return "\(String(format: "%.2f", weight)) KG"
     }

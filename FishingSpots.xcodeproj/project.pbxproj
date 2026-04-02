@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D961ED32F7ECC9A00AFA8A6 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 7D961ED22F7ECC9A00AFA8A6 /* FirebaseFirestore */; };
 		7D9BAC4D2F6D8A5A00D20DFE /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 7D9BAC4C2F6D8A5A00D20DFE /* GoogleMaps */; };
 		7D9BADA72F705FDA00D20DFE /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 7D9BADA62F705FDA00D20DFE /* FirebaseAuth */; };
 /* End PBXBuildFile section */
@@ -30,6 +31,7 @@
 			files = (
 				7D9BAC4D2F6D8A5A00D20DFE /* GoogleMaps in Frameworks */,
 				7D9BADA72F705FDA00D20DFE /* FirebaseAuth in Frameworks */,
+				7D961ED32F7ECC9A00AFA8A6 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +84,7 @@
 			packageProductDependencies = (
 				7D9BAC4C2F6D8A5A00D20DFE /* GoogleMaps */,
 				7D9BADA62F705FDA00D20DFE /* FirebaseAuth */,
+				7D961ED22F7ECC9A00AFA8A6 /* FirebaseFirestore */,
 			);
 			productName = FishingSpots;
 			productReference = 7D9BAC262F6C5A5400D20DFE /* FishingSpots.app */;
@@ -405,6 +408,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7D961ED22F7ECC9A00AFA8A6 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D9BAD382F705CF400D20DFE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
 		7D9BAC4C2F6D8A5A00D20DFE /* GoogleMaps */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7D9BAC4B2F6D8A5A00D20DFE /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;

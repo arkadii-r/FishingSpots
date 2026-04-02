@@ -21,19 +21,38 @@ struct SpotListView: View {
     }
     
     var body: some View {
-        contentView
-            .navigationTitle(Constant.navigationTitle)
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        tabCoordinator.selection = .map
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .font(AppTheme.Fonts.header1)
+        VStack {
+            switch viewModel.screenState {
+            case .loading:
+                LoadingView()
+                
+            case .content:
+                contentView
+                
+            case let .error(error):
+                ErrorView(
+                    errorText: error.localizedDescription,
+                    retryAction: {
+                        viewModel.retryTapped()
                     }
-                    .buttonStyle(.tapStyle)
-                }
+                )
             }
+        }
+        .navigationTitle(Constant.navigationTitle)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    tabCoordinator.selection = .map
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(AppTheme.Fonts.header1)
+                }
+                .buttonStyle(.tapStyle)
+            }
+        }
+        .onAppear {
+            viewModel.onAppear()
+        }
     }
 }
 

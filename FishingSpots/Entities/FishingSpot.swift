@@ -6,19 +6,21 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
-struct FishingSpot: Identifiable, Equatable {
+struct FishingSpot: Identifiable, Equatable, Codable {
+    @DocumentID var id: String?
     var name: String
     var location: String
     let latitude: Double
     let longitude: Double
     let catchReports: [CatchReport]
     
-    let id: String = UUID().uuidString
     
     var coordinatesString: String {
-        "\(latitude), \(longitude)"
+        "\(String(format: "%.6f", latitude)), \(String(format: "%.6f", longitude))"
     }
+    
     
     var catchCount: String {
         String(catchReports.reduce(0) { $0 + $1.count })

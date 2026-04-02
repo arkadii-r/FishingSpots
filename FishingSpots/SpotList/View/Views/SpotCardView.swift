@@ -72,6 +72,7 @@ struct SpotCardView: View {
                 }
                 
                 Button(role: .destructive) {
+                    deleteConfirmationAlertPresented = false
                     deleteAction()
                 }
             }

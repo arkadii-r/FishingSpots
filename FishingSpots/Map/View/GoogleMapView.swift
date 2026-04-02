@@ -10,26 +10,23 @@ import SwiftUI
 import GoogleMaps
 
 struct GoogleMapView: UIViewRepresentable {
-    
-    private var markers: [GMSMarker]
-    private let mapType: GMSMapViewType
-    
-    @State var selectedCoordinateMarker: GMSMarker?
+        
+    @State private var selectedCoordinateMarker: GMSMarker?
     @Binding var camera: GMSCameraPosition?
+    @Binding var markers: [GMSMarker]
     
     private let tapHandler: (CLLocationCoordinate2D) -> Void
     private let markerTapHandler: (GMSMarker) -> Bool
     
     init(
-        markers: [GMSMarker] = [],
+        markers: Binding<[GMSMarker]>,
         mapType: GMSMapViewType = .normal,
         camera: Binding<GMSCameraPosition?>,
         tapHandler: @escaping (CLLocationCoordinate2D) -> Void,
         markerTapHandler: @escaping (GMSMarker) -> Bool
         
     ) {
-        self.markers = markers
-        self.mapType = mapType
+        self._markers = markers
         self._camera = camera
         self.tapHandler = tapHandler
         self.markerTapHandler = markerTapHandler
@@ -37,7 +34,6 @@ struct GoogleMapView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> GMSMapView {
         let mapView = GMSMapView()
-        mapView.mapType = mapType
         mapView.delegate = context.coordinator
         
         return mapView
@@ -54,9 +50,10 @@ struct GoogleMapView: UIViewRepresentable {
             marker.icon = UIImage(resource: .hookedFish)
             marker.map = uiView
         }
-        selectedCoordinateMarker?.map = uiView
         
-        uiView.mapType = mapType
+        if !markers.contains(where: { $0.position == selectedCoordinateMarker?.position }) {
+            selectedCoordinateMarker?.map = uiView
+        }        
     }
     
     func makeCoordinator() -> GoogleMapViewCoordinator {
@@ -79,6 +76,7 @@ struct GoogleMapView: UIViewRepresentable {
             self.mapView.selectedCoordinateMarker = GMSMarker(position: coordinate)
             self.mapView.tapHandler(coordinate)
         }
+        
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
             guard self.mapView.markers.contains(where: { $0.position == marker.position }) else { return false }
             self.mapView.selectedCoordinateMarker = nil
@@ -86,19 +84,4 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
     }
-}
-
-
-extension GoogleMapView {
-    
-    func mapType(_ type: GMSMapViewType) -> GoogleMapView {
-        GoogleMapView(markers: markers, mapType: type, camera: $camera, tapHandler: tapHandler, markerTapHandler: markerTapHandler)
-    }
-    
-    func mapMarkers(_ markers: [GMSMarker]) -> GoogleMapView {
-        var view = self
-        view.markers = markers
-        return view
-    }
-    
 }

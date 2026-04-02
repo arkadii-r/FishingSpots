@@ -9,6 +9,7 @@ import Foundation
 import Observation
 import GoogleMaps
 import MapKit
+import Combine
 
 @Observable
 final class MapViewModel {
@@ -17,22 +18,44 @@ final class MapViewModel {
         case marker(GMSMarker)
     }
     
-    var spots: [FishingSpot] = [.init(name: "Lake", location: "Lake", latitude: 60.388581, longitude: 28.915037, catchReports: [])]
+    @ObservationIgnored
+    @Injected(\.spotsRepository) var spotsRepository
+    
+    private var spots: [FishingSpot] = []
     var selectedLocation: LocationType?
     var spotDetail: FishingSpot?
     var isLoadingLocationAddress: Bool = false
     var newSpot: FishingSpot?
     
-    var markers: [GMSMarker] {
-        spots.map {
-            let marker = GMSMarker(position: .init(latitude: $0.latitude, longitude: $0.longitude))
-            marker.title = $0.name
-            return marker
-        }
+    var markers: [GMSMarker] = []
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    private func bindSpots() {
+        self.spotsRepository.spots
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { spots in
+                self.spots = spots
+            })
+            .store(in: &cancellables)
+        
+        self.spotsRepository.newSpot
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { spot in
+                self.newSpot = nil
+                self.selectedLocation = nil
+                self.spotDetail = spot
+            })
+            .store(in: &cancellables)
     }
     
+    func onAppear() {
+        bindSpots()
+    }
+        
     func addSpot(at coordinate: CLLocationCoordinate2D) {
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        
         if let request = MKReverseGeocodingRequest(location: location) {
             isLoadingLocationAddress = true
             Task {
