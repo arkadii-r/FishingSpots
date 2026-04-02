@@ -10,7 +10,7 @@ import Observation
 
 @Observable
 final class SpotListViewModel {
-    var spots: [FishingSpot] = [
+    private var spots: [FishingSpot] = [
         .init(
             name: "Salt Lake",
             location: "Salt Lake City, USA",
@@ -48,6 +48,12 @@ final class SpotListViewModel {
             catchReports: []
         )
     ]
+    
+    var searchText: String = ""
+    
+    var filteredSpots: [FishingSpot] {
+        searchText.isEmpty ? spots : spots.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+    }
     
     var spotDetail: FishingSpot?
     

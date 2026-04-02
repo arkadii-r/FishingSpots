@@ -44,11 +44,9 @@ struct SpotCardView: View {
                     .foregroundColor(AppTheme.Colors.red)
 
             }
-            .disabled(offsetValue != -Constant.thresholdValue)
-            .offset(x: offsetValue + 55)
+            .offset(x: 55)
             
             contentView
-                .offset(x: offsetValue, y: 0)
                 .gesture(
                     DragGesture(minimumDistance: 30)
                         .onChanged { gesture in
@@ -60,6 +58,7 @@ struct SpotCardView: View {
                         }
                 )
         }
+        .offset(x: offsetValue)
         .onDisappear {
             offset = .zero
         }

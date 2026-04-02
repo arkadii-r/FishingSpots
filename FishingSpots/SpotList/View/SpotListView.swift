@@ -39,7 +39,7 @@ private extension SpotListView {
     var contentView: some View {
         ScrollView {
             LazyVStack(spacing: 16) {
-                ForEach(viewModel.spots) { spot in
+                ForEach(viewModel.filteredSpots) { spot in
                     NavigationLink {
                         SpotDetailView(viewModel: .init(spot: spot))
                     } label: {
@@ -54,8 +54,9 @@ private extension SpotListView {
                 }
             }
             .padding()
-            .animation(.default.speed(2), value: viewModel.spots)
+            .animation(.default.speed(2), value: viewModel.filteredSpots)
         }
+        .searchable(text: $viewModel.searchText)
     }
 }
 
