@@ -11,10 +11,21 @@ import UIKit
 
 @Observable
 final class SpotDetailViewModel {
-    let spot: FishingSpot
+    var spot: FishingSpot
+    var addNewReportSheetPresented: Bool = false
     
     init(spot: FishingSpot) {
         self.spot = spot
+    }
+    
+    
+    func addNewReport() {
+        addNewReportSheetPresented = true
+    }
+    
+    func handleNewReport(report: CatchReport) {
+        spot.catchReports.append(report)
+        addNewReportSheetPresented = false
     }
     
     func copyCoordinates() {

@@ -7,7 +7,6 @@
 
 import Foundation
 import Observation
-import FirebaseFirestore
 
 @Observable
 final class AddSpotViewModel {

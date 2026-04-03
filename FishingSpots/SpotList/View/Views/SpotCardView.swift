@@ -140,18 +140,22 @@ private extension SpotCardView {
             longitude: 40.43134,
             catchReports: [
                 .init(
+                    id: UUID().uuidString,
                     fish: "Trout",
                     weight: 3.14,
                     count: 1,
                     photoURL: nil,
-                    date: "18:00, 23 April 2024"
+                    date: .now,
+                    note: ""
                 ),
                 .init(
+                    id: UUID().uuidString,
                     fish: "Bass",
                     weight: 4.71,
                     count: 10,
                     photoURL: nil,
-                    date: "18:00, 23 April 2024"
+                    date: .now,
+                    note: ""
                 )
             ],
             createdAt: .now

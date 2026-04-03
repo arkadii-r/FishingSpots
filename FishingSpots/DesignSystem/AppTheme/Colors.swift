@@ -21,6 +21,11 @@ extension AppTheme {
         /// hex: #C2AE6F
         public static let fsSecondaryGreen = Color(hex: "#C2AE6F")
         
+        /// hex: #1E3A8A
+        public static let royalBlue = Color(hex: "#1E3A8A")
+        /// hex: #0F172A
+        public static let slateMidnight = Color(hex: "#0F172A")
+        
         public static let gray = Color.gray
         /// hex: #E5E7EB
         public static let disabledGray = Color(hex: "#E5E7EB")

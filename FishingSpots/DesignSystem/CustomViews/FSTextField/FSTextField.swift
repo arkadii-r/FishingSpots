@@ -15,6 +15,11 @@ struct FSTextField: View {
     let keyboardType: UIKeyboardType
     var validate: Bool
     let maxSymbols: Int?
+    let lineLimit: Int
+    
+    var multilineField: Bool {
+        lineLimit > 1
+    }
     
     var validationFailed: Bool {
         !validate && !text.isEmpty
@@ -43,13 +48,15 @@ struct FSTextField: View {
         text: Binding<String>,
         keyboardType: UIKeyboardType = .default,
         validate: Bool = true,
-        maxSymbols: Int? = nil
+        maxSymbols: Int? = nil,
+        lineLimit: Int = 1
     ) {
         self.label = label
         self._text = text
         self.keyboardType = keyboardType
         self.validate = validate
         self.maxSymbols = maxSymbols
+        self.lineLimit = lineLimit
     }
     
     var body: some View {
@@ -66,11 +73,21 @@ struct FSTextField: View {
                         }
                 }
                 
-                TextField("", text: $text)
+                TextField("", text: $text, axis: multilineField ? .vertical : .horizontal)
+                    .submitLabel(.done)
+                    .lineLimit(lineLimit, reservesSpace: true)
                     .tint(AppTheme.Colors.fsPrimaryGreen)
                     .foregroundColor(AppTheme.Colors.adaptiveBlack)
                     .focused($isFocused)
+                    .onSubmit {
+                        isFocused = false
+                    }
                     .onChange(of: text) { _, newValue in
+                        if multilineField, isFocused, newValue.contains("\n") {
+                            isFocused = false
+                            text = newValue.replacingOccurrences(of: "\n", with: "")
+                        }
+                        
                         if let length = maxSymbols,
                            newValue.count > length {
                             text = String(newValue.prefix(length))
@@ -80,7 +97,7 @@ struct FSTextField: View {
         }
         .keyboardType(keyboardType)
         .padding()
-        .frame(height: 56)
+        .frame(height: multilineField ? nil : 56)
         .background(backgroundColor)
         .cornerRadius(16)
         .overlay(

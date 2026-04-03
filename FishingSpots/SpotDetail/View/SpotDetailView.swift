@@ -35,6 +35,26 @@ struct SpotDetailView: View {
             .navigationTitle(viewModel.spot.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbarVisibility(.hidden, for: .tabBar)
+            .sheet(isPresented: $viewModel.addNewReportSheetPresented) {
+                NavigationStack {
+                    AddCatchReportView(
+                        viewModel: .init(
+                            spotId: viewModel.spot.id ?? "",
+                            completion: viewModel.handleNewReport(report:)
+                        )
+                    )
+                    .presentationBackground(
+                        LinearGradient(
+                            colors:[
+                                AppTheme.Colors.royalBlue,
+                                AppTheme.Colors.slateMidnight
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                }
+            }
     }
 }
 
@@ -104,7 +124,7 @@ private extension SpotDetailView {
                 Spacer()
                 
                 Button {
-                    // TODO: ADD CATCH REPORT
+                    viewModel.addNewReport()
                 } label: {
                     Image(systemName: "plus.circle.fill")
                         .font(AppTheme.Fonts.header1Bold)
@@ -162,7 +182,7 @@ private extension SpotDetailView {
             
             Spacer()
             
-            Text(report.date)
+            Text(report.date, format: .dateTime)
                 .foregroundColor(AppTheme.Colors.black)
                 .font(AppTheme.Fonts.bodyS)
         }
@@ -181,23 +201,27 @@ private extension SpotDetailView {
                             longitude: 40.43134,
                             catchReports: [
                                 .init(
+                                    id: UUID().uuidString,
                                     fish: "Trout",
                                     weight: 3.14,
                                     count: 1,
                                     photoURL: nil,
-                                    date: "18:00, 23 April 2024"
+                                    date: .now,
+                                    note: ""
                                 ),
                                 .init(
+                                    id: UUID().uuidString,
                                     fish: "Bass",
                                     weight: 4.71,
                                     count: 10,
                                     photoURL: nil,
-                                    date: "18:00, 23 April 2024"
+                                    date: .now,
+                                    note: ""
                                 )
                             ],
                             createdAt: .now
+                        )
                     )
-                )
         )
     }
 }

@@ -14,7 +14,7 @@ struct FishingSpot: Identifiable, Equatable, Codable {
     var location: String
     let latitude: Double
     let longitude: Double
-    let catchReports: [CatchReport]
+    var catchReports: [CatchReport]
     let createdAt: Date
     
     var coordinatesString: String {

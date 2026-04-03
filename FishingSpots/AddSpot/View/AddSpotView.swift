@@ -29,7 +29,7 @@ struct AddSpotView: View {
     
     var body: some View {
         VStack(spacing: 40) {
-            Text("\(viewModel.newSpot.latitude),\(viewModel.newSpot.longitude)")
+            Text(viewModel.newSpot.coordinatesString)
                 .font(AppTheme.Fonts.header3Bold.monospaced())
             
             VStack(spacing: 20) {

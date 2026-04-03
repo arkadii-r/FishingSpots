@@ -64,6 +64,14 @@ final class SpotsRepository {
         }
     }
     
+    func addCatchReport(for spotId: String, report: CatchReport) async throws {
+        let data = try Firestore.Encoder().encode(report)
+
+        try await store.collection(path).document(spotId).updateData([
+            "catchReports": FieldValue.arrayUnion([data])
+        ])
+    }
+    
     func deleteSpot(_ spot: FishingSpot) async throws {
         try await store.collection(path).document(spot.id ?? "").delete()
     }

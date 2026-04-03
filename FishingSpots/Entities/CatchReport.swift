@@ -9,12 +9,13 @@ import Foundation
 import FirebaseFirestore
 
 struct CatchReport: Identifiable, Equatable, Codable {
-    @DocumentID var id: String?
-    let fish: String
-    let weight: Double
-    let count: Int
-    let photoURL: URL?
-    let date: String
+    let id: String
+    var fish: String
+    var weight: Double
+    var count: Int
+    var photoURL: URL?
+    var date: Date
+    var note: String
         
     var weightString: String {
         return "\(String(format: "%.2f", weight)) KG"
