@@ -57,22 +57,27 @@ final class MapViewModel {
     }
         
     func addSpot(at coordinate: CLLocationCoordinate2D) {
-        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        var spot: FishingSpot = .init(
+            location: "",
+            latitude: coordinate.latitude,
+            longitude: coordinate.longitude
+        )
         
-        if let request = MKReverseGeocodingRequest(location: location) {
-            isLoadingLocationAddress = true
-            Task {
-                let mapitems = try? await request.mapItems
-                isLoadingLocationAddress = false
-                if let mapitem = mapitems?.first {
-                    let address = mapitem.addressRepresentations?.cityWithContext(.full)
-                    self.newSpot = .init(
-                        location: address ?? "",
-                        latitude: coordinate.latitude,
-                        longitude: coordinate.longitude
-                    )
-                }
+        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        guard let request = MKReverseGeocodingRequest(location: location) else {
+            self.newSpot = spot
+            return
+        }
+        
+        isLoadingLocationAddress = true
+
+        Task {
+            let mapItems = try? await request.mapItems
+            isLoadingLocationAddress = false
+            if let address = mapItems?.first?.addressRepresentations?.cityWithContext(.full) {
+                spot.location = address
             }
+            self.newSpot = spot
         }
     }
     

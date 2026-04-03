@@ -11,7 +11,7 @@ import GoogleMaps
 
 struct GoogleMapView: UIViewRepresentable {
         
-    @State private var selectedCoordinateMarker: GMSMarker?
+    @State private var selectedMarker: GMSMarker?
     @Binding var camera: GMSCameraPosition?
     @Binding var markers: [GMSMarker]
     
@@ -47,13 +47,16 @@ struct GoogleMapView: UIViewRepresentable {
         uiView.clear()
         
         markers.forEach { marker in
-            marker.icon = UIImage(resource: .hookedFish)
+            marker.icon = .hookedFish
+            if marker.position == selectedMarker?.position {
+                marker.icon = .selectedHookedFish
+            }
             marker.map = uiView
         }
         
-        if !markers.contains(where: { $0.position == selectedCoordinateMarker?.position }) {
-            selectedCoordinateMarker?.map = uiView
-        }        
+        if !markers.contains(where: { $0.position == selectedMarker?.position }) {
+            selectedMarker?.map = uiView
+        }
     }
     
     func makeCoordinator() -> GoogleMapViewCoordinator {
@@ -73,15 +76,13 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
-            self.mapView.selectedCoordinateMarker = GMSMarker(position: coordinate)
+            self.mapView.selectedMarker = GMSMarker(position: coordinate)
             self.mapView.tapHandler(coordinate)
         }
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-            guard self.mapView.markers.contains(where: { $0.position == marker.position }) else { return false }
-            self.mapView.selectedCoordinateMarker = nil
+            self.mapView.selectedMarker = marker
             return self.mapView.markerTapHandler(marker)
         }
-        
     }
 }
