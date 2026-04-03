@@ -15,6 +15,7 @@ private struct Constant {
         static let catchReports = "Catch Reports"
         static let emptyReports = "No catch reports yet"
         static let weight = "WEIGHT: "
+        static let notes = "notes: "
     }
     
     struct Button {
@@ -30,7 +31,7 @@ struct SpotDetailView: View {
     
     var body: some View {
         contentView
-            .padding()
+            .padding([.horizontal, .top])
             .background(FSBackgroundGradientView().ignoresSafeArea())
             .navigationTitle(viewModel.spot.name)
             .navigationBarTitleDisplayMode(.inline)
@@ -155,37 +156,48 @@ private extension SpotDetailView {
                 .cornerRadius(16)
             }
             .cornerRadius(16)
+            .ignoresSafeArea()
         }
     }
     
     func reportCardView(for report: CatchReport) -> some View {
-        HStack {
-            AsyncImage(url: report.photoURL) { image in
-                image
-                    .resizable()
-                    .frame(width: 50, height: 50)
-            } placeholder: {
-                Image(systemName: "camera")
-                    .frame(width: 50, height: 50)
-                    .background(AppTheme.Colors.white)
-                    .cornerRadius(16)
-            }
-            
-            VStack(alignment: .leading, spacing: .zero) {
-                Text("\(report.fish) x\(report.count)")
-                    .font(AppTheme.Fonts.calloutBold)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                AsyncImage(url: report.photoURL) { image in
+                    image
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                } placeholder: {
+                    Image(systemName: "camera")
+                        .frame(width: 50, height: 50)
+                        .background(AppTheme.Colors.white)
+                        .cornerRadius(16)
+                }
                 
-                Text(Constant.Text.weight + report.weightString)
+                VStack(alignment: .leading, spacing: .zero) {
+                    Text("\(report.fish) x\(report.count)")
+                        .font(AppTheme.Fonts.calloutBold)
+                    
+                    Text(Constant.Text.weight + report.weightString)
+                        .font(AppTheme.Fonts.bodyS)
+                }
+                
+                Spacer()
+                
+                Text(report.date, format: .dateTime)
                     .font(AppTheme.Fonts.bodyS)
             }
-            .foregroundColor(AppTheme.Colors.black)
             
-            Spacer()
-            
-            Text(report.date, format: .dateTime)
-                .foregroundColor(AppTheme.Colors.black)
-                .font(AppTheme.Fonts.bodyS)
+            if !report.note.isEmpty {
+                VStack(alignment: .leading, spacing: .zero) {
+                    Text(Constant.Text.notes)
+
+                    Text(report.note)
+                }
+                .font(AppTheme.Fonts.bodyXS)
+            }
         }
+        .foregroundColor(AppTheme.Colors.black)
     }
 }
 
@@ -207,11 +219,11 @@ private extension SpotDetailView {
                                     count: 1,
                                     photoURL: nil,
                                     date: .now,
-                                    note: ""
+                                    note: "Long text why not so long long long long long"
                                 ),
                                 .init(
                                     id: UUID().uuidString,
-                                    fish: "Bass",
+                                    fish: "Bassf",
                                     weight: 4.71,
                                     count: 10,
                                     photoURL: nil,
