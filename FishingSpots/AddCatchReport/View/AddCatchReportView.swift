@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 private struct Constant {
     struct Text {
@@ -34,6 +35,7 @@ struct AddCatchReportView: View {
     
     @State private var viewModel: AddCatchReportViewModel
     @FocusState var focusedField: FocusedField?
+    @State private var photoItem: PhotosPickerItem?
     
     init(viewModel: AddCatchReportViewModel) {
         self.viewModel = viewModel
@@ -42,11 +44,31 @@ struct AddCatchReportView: View {
     var body: some View {
         ScrollView {
             contentView
-                .padding()
+                .padding([.horizontal, .top])
+                .padding(.bottom, 75)
                 .onTapGesture {
                     focusedField = nil
                 }
         }
+        .overlay(
+            alignment: .bottom,
+            content: {
+                VStack(spacing: 16) {
+                    Button(Constant.Button.add) {
+                        focusedField = nil
+                        viewModel.addSpot()
+                    }
+                    .buttonStyle(.fsButton(.secondary, isLoading: viewModel.isLoadingAddButton))
+                    .disabled(!viewModel.addButtonEnabled)
+                    
+                    if let errorText = viewModel.addingErrorText {
+                        Text(errorText)
+                            .foregroundColor(.red)
+                    }
+                }
+                .padding([.horizontal, .bottom], 16)
+            }
+        )
         .navigationTitle(Constant.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -55,6 +77,8 @@ struct AddCatchReportView: View {
 private extension AddCatchReportView {
     var contentView: some View {
         VStack(spacing: 40) {
+            photoPickerView
+            
             VStack(spacing: 20) {
                 FSTextField(
                     label: Constant.Text.fishName,
@@ -112,24 +136,48 @@ private extension AddCatchReportView {
             )
             .focused($focusedField, equals: .note)
             .fontDesign(.monospaced)
-            
-            Spacer()
-            
-            VStack(spacing: 16) {
-                Button(Constant.Button.add) {
-                    focusedField = nil
-                    viewModel.addSpot()
-                }
-                .buttonStyle(.fsButton(.secondary, isLoading: viewModel.isLoadingAddButton))
-                .disabled(!viewModel.addButtonEnabled)
-                
-                if let errorText = viewModel.addingErrorText {
-                    Text(errorText)
-                        .foregroundColor(.red)
-                }
-            }
         }
         
+    }
+    
+    var photoPickerView: some View {
+        PhotosPicker(
+            selection: $photoItem,
+            matching: .any(of: [.images, .livePhotos]),
+            label: {
+                VStack {
+                    switch viewModel.selectedImage {
+                    case let .some(image):
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                        
+                    case .none:
+                        Image(systemName: "photo.fill.on.rectangle.fill")
+                            .resizable()
+                            .frame(width: 60, height: 50)
+                            .foregroundColor(AppTheme.Colors.white)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: viewModel.selectedImage != nil ? 270 : 150)
+                .overlay(alignment: .bottomTrailing) {
+                    if viewModel.selectedImage != nil {
+                        Image(systemName: "trash")
+                            .foregroundColor(AppTheme.Colors.red)
+                            .padding(5)
+                            .background(AppTheme.Colors.white.opacity(0.5))
+                            .cornerRadius(24)
+                            .onTapGesture {
+                                photoItem = nil
+                            }
+                    }
+                }
+            }
+        )
+        .onChange(of: photoItem) { _ ,newValue in
+            viewModel.handlePhotoItemChange(newValue)
+        }
     }
 }
 

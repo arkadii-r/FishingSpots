@@ -14,16 +14,12 @@ private struct Constant {
         static let coordinates = "Coordinates"
         static let catchReports = "Catch Reports"
         static let emptyReports = "No catch reports yet"
-        static let weight = "WEIGHT: "
-        static let notes = "notes: "
-    }
-    
-    struct Button {
     }
 }
 
 struct SpotDetailView: View {
     @State private var viewModel: SpotDetailViewModel
+    @State var image: Image?
     
     init(viewModel: SpotDetailViewModel) {
         self.viewModel = viewModel
@@ -44,16 +40,19 @@ struct SpotDetailView: View {
                             completion: viewModel.handleNewReport(report:)
                         )
                     )
-                    .presentationBackground(
-                        LinearGradient(
-                            colors:[
-                                AppTheme.Colors.royalBlue,
-                                AppTheme.Colors.slateMidnight
-                            ],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
+                    .presentationBackground(BlueGradientBackgroundView())
+                }
+            }
+            .sheet(item: $viewModel.imageItem) { imageItem in
+                NavigationStack {
+                    ZoomableScrollView(content: {
+                        imageItem.image
+                            .resizable()
+                            .scaledToFit()
+                    })
+                    .navigationTitle(imageItem.title)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .presentationBackground(BlueGradientBackgroundView())
                 }
             }
     }
@@ -137,7 +136,12 @@ private extension SpotDetailView {
                 LazyVStack(spacing: 16) {
                     if !viewModel.spot.catchReports.isEmpty {
                         ForEach(viewModel.spot.catchReports) { report in
-                            reportCardView(for: report)
+                            CatchReportView(
+                                report: report,
+                                imageTapAction: {
+                                    viewModel.imageItem = .init(title: report.fish, image: $0)
+                                }
+                            )
                             
                             if viewModel.spot.catchReports.last != report {
                                 Divider()
@@ -159,46 +163,6 @@ private extension SpotDetailView {
             .ignoresSafeArea()
         }
     }
-    
-    func reportCardView(for report: CatchReport) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                AsyncImage(url: report.photoURL) { image in
-                    image
-                        .resizable()
-                        .frame(width: 50, height: 50)
-                } placeholder: {
-                    Image(systemName: "camera")
-                        .frame(width: 50, height: 50)
-                        .background(AppTheme.Colors.white)
-                        .cornerRadius(16)
-                }
-                
-                VStack(alignment: .leading, spacing: .zero) {
-                    Text("\(report.fish) x\(report.count)")
-                        .font(AppTheme.Fonts.calloutBold)
-                    
-                    Text(Constant.Text.weight + report.weightString)
-                        .font(AppTheme.Fonts.bodyS)
-                }
-                
-                Spacer()
-                
-                Text(report.date, format: .dateTime)
-                    .font(AppTheme.Fonts.bodyS)
-            }
-            
-            if !report.note.isEmpty {
-                VStack(alignment: .leading, spacing: .zero) {
-                    Text(Constant.Text.notes)
-
-                    Text(report.note)
-                }
-                .font(AppTheme.Fonts.bodyXS)
-            }
-        }
-        .foregroundColor(AppTheme.Colors.black)
-    }
 }
 
 #Preview {
@@ -217,7 +181,7 @@ private extension SpotDetailView {
                                     fish: "Trout",
                                     weight: 3.14,
                                     count: 1,
-                                    photoURL: nil,
+                                    photoURL: URL(string: "https://firebasestorage.googleapis.com:443/v0/b/fishing-spots-59a3d.firebasestorage.app/o/images%2F8E574C5F-D514-470A-884B-03FCB5E7BBCD.jpg?alt=media&token=555a9e4a-7d51-4d5f-9692-2e27b916bd59")!,
                                     date: .now,
                                     note: "Long text why not so long long long long long"
                                 ),

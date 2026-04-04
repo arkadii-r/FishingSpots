@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseAuth
+import FirebaseFirestore
 
 final class AuthService {
     func login(email: String, password: String) async -> Result<AuthDataResult, Error> {
@@ -24,6 +25,13 @@ final class AuthService {
             let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
             changeRequest?.displayName = username
             try await changeRequest?.commitChanges()
+            
+            let userRef = Firestore.firestore().collection("users").document(result.user.uid)
+            try await userRef.setData([
+                "name": username,
+                "email": email,
+            ])
+            
             return .success(result)
             
         } catch {

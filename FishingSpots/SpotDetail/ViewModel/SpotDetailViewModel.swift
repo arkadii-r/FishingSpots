@@ -13,6 +13,7 @@ import UIKit
 final class SpotDetailViewModel {
     var spot: FishingSpot
     var addNewReportSheetPresented: Bool = false
+    var imageItem: SheetImageItem?
     
     init(spot: FishingSpot) {
         self.spot = spot

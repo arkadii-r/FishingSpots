@@ -11,6 +11,9 @@ import FirebaseAuth
 
 @Observable
 class AppViewModel {
+    @ObservationIgnored
+    @Injected(\.spotsRepository) var spotsRepository
+    
     enum AppState: Equatable {
         case loading
         case greeting(username: String)
@@ -29,6 +32,8 @@ class AppViewModel {
         authHandle = Auth.auth().addStateDidChangeListener { auth, user in
             switch auth.currentUser {
             case let .some(user):
+                self.spotsRepository.bindSpotsListener()
+                
                 guard let username = user.displayName ?? user.email else {
                     self.appState = .main
                     return
@@ -40,6 +45,7 @@ class AppViewModel {
                 }
                 
             case .none:
+                self.spotsRepository.removeSpotsListener()
                 self.appState = .login
             }
         }
