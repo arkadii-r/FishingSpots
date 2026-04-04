@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct CatchReport: Identifiable, Equatable, Codable {
+struct CatchReport: Identifiable, Equatable {
     let id: String
     var fish: String
     var weight: Double

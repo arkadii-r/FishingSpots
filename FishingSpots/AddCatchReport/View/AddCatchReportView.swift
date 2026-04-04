@@ -112,7 +112,7 @@ private extension AddCatchReportView {
                 DatePicker(
                     Constant.Text.date,
                     selection: $viewModel.newCatchReport.date,
-                    in: Date()...,
+                    in: ...Date(),
                     displayedComponents: .date
                 )
                 .colorScheme(.dark)
@@ -120,7 +120,7 @@ private extension AddCatchReportView {
                 DatePicker(
                     Constant.Text.time,
                     selection: $viewModel.newCatchReport.date,
-                    in: Date()...,
+                    in: ...Date(),
                     displayedComponents: .hourAndMinute
                 )
                 .colorScheme(.dark)

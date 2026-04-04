@@ -6,19 +6,18 @@
 //
 
 import Foundation
-import FirebaseFirestore
+import CoreLocation
 
-struct FishingSpot: Identifiable, Equatable, Codable {
-    @DocumentID var id: String?
+struct FishingSpot: Identifiable, Equatable {
+    let id: String
     var name: String
     var location: String
-    let latitude: Double
-    let longitude: Double
+    let coordinate: CLLocationCoordinate2D
     var catchReports: [CatchReport]
     let createdAt: Date
     
     var coordinatesString: String {
-        "\(String(format: "%.6f", latitude)), \(String(format: "%.6f", longitude))"
+        "\(String(format: "%.6f", coordinate.latitude)), \(String(format: "%.6f", coordinate.longitude))"
     }
     
     var catchCount: String {
@@ -26,30 +25,29 @@ struct FishingSpot: Identifiable, Equatable, Codable {
     }
     
     init(
+        id: String,
         name: String,
         location: String,
-        latitude: Double,
-        longitude: Double,
+        coordinate: CLLocationCoordinate2D,
         catchReports: [CatchReport],
         createdAt: Date
     ) {
+        self.id = id
         self.name = name
         self.location = location
-        self.latitude = latitude
-        self.longitude = longitude
+        self.coordinate = coordinate
         self.catchReports = catchReports
         self.createdAt = createdAt
     }
     
     init(
         location: String,
-        latitude: Double,
-        longitude: Double
+        coordinate: CLLocationCoordinate2D
     ) {
+        self.id = ""
         self.name = ""
         self.location = location
-        self.latitude = latitude
-        self.longitude = longitude
+        self.coordinate = coordinate
         self.catchReports = []
         self.createdAt = Date.now
     }

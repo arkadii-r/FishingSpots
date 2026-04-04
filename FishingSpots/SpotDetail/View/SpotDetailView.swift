@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 private struct Constant {
     struct Text {
@@ -36,7 +37,7 @@ struct SpotDetailView: View {
                 NavigationStack {
                     AddCatchReportView(
                         viewModel: .init(
-                            spotId: viewModel.spot.id ?? "",
+                            spotId: viewModel.spot.id,
                             completion: viewModel.handleNewReport(report:)
                         )
                     )
@@ -171,10 +172,10 @@ private extension SpotDetailView {
             viewModel:
                     .init(
                         spot: .init(
+                            id: "1",
                             name: "Salt Lake",
                             location: "Salt Lake City",
-                            latitude: 30.43134,
-                            longitude: 40.43134,
+                            coordinate: .init(latitude: 30.43134, longitude: 40.43134),
                             catchReports: [
                                 .init(
                                     id: UUID().uuidString,

@@ -35,7 +35,7 @@ final class MapViewModel {
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { spots in
                 self.markers = spots.map {
-                    let marker = GMSMarker(position: .init(latitude: $0.latitude, longitude: $0.longitude))
+                    let marker = GMSMarker(position: $0.coordinate)
                     marker.title = $0.name
                     return marker
                 }
@@ -59,8 +59,7 @@ final class MapViewModel {
     func addSpot(at coordinate: CLLocationCoordinate2D) {
         var spot: FishingSpot = .init(
             location: "",
-            latitude: coordinate.latitude,
-            longitude: coordinate.longitude
+            coordinate: coordinate
         )
         
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
@@ -82,7 +81,7 @@ final class MapViewModel {
     }
     
     func showSpotDetail(marker: GMSMarker) {
-        guard let spot = spotsRepository.spots.value.first(where: { $0.latitude == marker.position.latitude && $0.longitude == marker.position.longitude }) else { return }
+        guard let spot = spotsRepository.spots.value.first(where: { $0.coordinate == marker.position }) else { return }
         spotDetail = spot
     }
     

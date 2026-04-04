@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 private struct Constant {
     struct Text {
@@ -74,8 +75,7 @@ struct AddSpotView: View {
         viewModel: .init(
             newSpot: .init(
                 location: "River, London",
-                latitude: 30.312312,
-                longitude: 34.444113
+                coordinate: .init(latitude: 30.43134, longitude: 40.43134)
             )
         )
     )

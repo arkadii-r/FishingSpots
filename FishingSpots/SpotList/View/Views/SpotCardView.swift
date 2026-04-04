@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 private struct Constant {
     struct Text {
@@ -134,10 +135,10 @@ private extension SpotCardView {
 #Preview {
     SpotCardView(
         spot: .init(
+            id: "1",
             name: "Salt Lake",
             location: "Salt Lake City",
-            latitude: 30.43134,
-            longitude: 40.43134,
+            coordinate: .init(latitude: 30.43134, longitude: 40.43134),
             catchReports: [
                 .init(
                     id: UUID().uuidString,
