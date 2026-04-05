@@ -22,20 +22,25 @@ private struct Constant {
         static let addSpot = "Add Fishing Spot"
         static let showSpotDetails = "Show Spot Details"
     }
+    
+    struct Alert {
+        static let title = "Location Access Denied. Please enable location usage in your device settings."
+        static let settingsButton = "Go to settings"
+    }
 }
 
 
 struct MapView: View {
     @State private var viewModel: MapViewModel
-    @State private var camera: GMSCameraPosition?
     
     init(viewModel: MapViewModel) {
         self.viewModel = viewModel
     }
+    
     var body: some View {
         GoogleMapView(
             markers: $viewModel.markers,
-            camera: $camera,
+            camera: $viewModel.camera,
             tapHandler: { coordinate in
                 viewModel.selectedLocation = .coordinate(coordinate)
             },
@@ -45,14 +50,37 @@ struct MapView: View {
             }
         )
         .overlay(alignment: .bottom) {
-            selectionCardView
-                .padding(.horizontal)
-                .padding(.bottom, 120)
-                .isHidden(viewModel.selectedLocation == nil)
+            VStack(alignment: .trailing, spacing: 5) {
+                Button {
+                    viewModel.centerUserLocation()
+                } label: {
+                    Image(.userLocation)
+                }
+                .buttonStyle(.tapStyle)
+                
+                selectionCardView
+                    .isHidden(viewModel.selectedLocation == nil)
+            }
+            .frame(maxWidth: .infinity, alignment: .trailing)
+            .padding(.horizontal)
+            .padding(.bottom, 120)
         }
         .onAppear {
             viewModel.onAppear()
         }
+        .alert(
+            Constant.Alert.title,
+            isPresented: $viewModel.locationSettingsAlertPresented,
+            actions: {
+                Button(role: .cancel) {
+                    viewModel.locationSettingsAlertPresented = false
+                }
+                
+                Button( Constant.Alert.settingsButton) {
+                    viewModel.openSettings()
+                }
+            }
+        )
         .sheet(item: $viewModel.spotDetail) { spot in
             NavigationStack {
                 SpotDetailView(viewModel: .init(spot: spot))
@@ -121,9 +149,7 @@ private extension MapView {
         }
         .contentShape(.rect)
         .onTapGesture {
-            if let cameraPosition = viewModel.getCameraPosition() {
-                camera = cameraPosition
-            }
+            viewModel.centerSelectedLocation()
         }
     }
 }

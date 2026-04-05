@@ -10,6 +10,7 @@ import Observation
 import GoogleMaps
 import MapKit
 import Combine
+import CoreLocation
 
 @Observable
 final class MapViewModel {
@@ -27,6 +28,8 @@ final class MapViewModel {
     var isLoadingLocationAddress: Bool = false
     var newSpot: FishingSpot?
     
+    var camera: GMSCameraPosition?
+    var locationSettingsAlertPresented: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -54,6 +57,7 @@ final class MapViewModel {
     
     func onAppear() {
         bindSpots()
+        centerUserLocation(onAppear: true)
     }
         
     func addSpot(at coordinate: CLLocationCoordinate2D) {
@@ -85,16 +89,47 @@ final class MapViewModel {
         spotDetail = spot
     }
     
-    func getCameraPosition() -> GMSCameraPosition? {
+    func centerUserLocation(onAppear: Bool = false) {
+        Task {
+            let updates = CLLocationUpdate.liveUpdates()
+            do {
+                for try await update in updates {
+                    guard !update.authorizationDenied else {
+                        if !onAppear {
+                            self.locationSettingsAlertPresented = true
+                        }
+                        break
+                    }
+                    
+                    if let location = update.location {
+                        self.camera = GMSCameraPosition(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 10)
+                        break
+                    }
+                }
+            }
+            catch {
+                
+            }
+        }
+    }
+    
+    func centerSelectedLocation() {
         switch selectedLocation {
         case let .coordinate(coordinate):
-            return GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 15)
-
+            self.camera = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 15)
+            
         case let .marker(marker):
-            return GMSCameraPosition(latitude: marker.position.latitude, longitude: marker.position.longitude, zoom: 15)
-
+            self.camera = GMSCameraPosition(latitude: marker.position.latitude, longitude: marker.position.longitude, zoom: 15)
+            
         case .none:
-            return nil
+            self.camera = nil
+        }
+    }
+    
+    func openSettings() {
+        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
+        if UIApplication.shared.canOpenURL(settingsUrl) {
+            UIApplication.shared.open(settingsUrl)
         }
     }
 }

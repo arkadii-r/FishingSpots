@@ -34,6 +34,7 @@ struct GoogleMapView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> GMSMapView {
         let mapView = GMSMapView()
+        mapView.isMyLocationEnabled = true
         mapView.delegate = context.coordinator
         
         return mapView
@@ -41,7 +42,7 @@ struct GoogleMapView: UIViewRepresentable {
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         if let camera = camera {
-            uiView.camera = camera
+            uiView.animate(to: camera)
         }
         
         uiView.clear()

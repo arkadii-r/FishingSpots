@@ -116,7 +116,7 @@ final class SpotsRepository {
 
 extension SpotsRepository {
     func uploadImage(image: UIImage) async throws -> URL? {
-        guard let imageData = image.jpegData(compressionQuality: 0.6) else { return nil }
+        guard let imageData = image.jpegData(compressionQuality: 0.5) else { return nil }
         let imageRef = cloudStorage.child("images/\(UUID().uuidString).jpg")
         
         let _ = try await imageRef.putDataAsync(imageData)
