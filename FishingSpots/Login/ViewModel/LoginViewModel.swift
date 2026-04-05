@@ -20,6 +20,9 @@ class LoginViewModel {
     @ObservationIgnored
     @Injected(\.authService) private var authService
     
+    @ObservationIgnored
+    @Injected(\.authMonitor) var authMonitor
+    
     var emailText: String = ""
     var passwordText: String = ""
     var registerSheetShown: Bool = false
@@ -41,7 +44,7 @@ class LoginViewModel {
             isLoadingAuth = false
             switch result {
             case .success:
-                break
+                authMonitor.listenToAuthState()
                 
             case let .failure(error):
                 guard let authError = AuthErrorCode(rawValue: (error as NSError).code) else {
@@ -49,7 +52,6 @@ class LoginViewModel {
                     return
                 }
                 
-                print((error as NSError).code)
                 switch authError {
                 case .invalidCredential:
                     self.errorText = Constant.invalidCredentialErrorMessage

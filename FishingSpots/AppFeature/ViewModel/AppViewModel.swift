@@ -12,6 +12,9 @@ import FirebaseAuth
 @Observable
 class AppViewModel {
     @ObservationIgnored
+    @Injected(\.authMonitor) var authMonitor
+    
+    @ObservationIgnored
     @Injected(\.spotsRepository) var spotsRepository
     
     enum AppState: Equatable {
@@ -25,11 +28,11 @@ class AppViewModel {
     var authHandle: AuthStateDidChangeListenerHandle?
     
     func onAppear() {
-        listenToAuthChanges()
+        bindAuthStateHandler()
     }
     
-    func listenToAuthChanges() {
-        authHandle = Auth.auth().addStateDidChangeListener { auth, user in
+    func bindAuthStateHandler() {
+        authMonitor.authStateHandler = { auth in
             switch auth.currentUser {
             case let .some(user):
                 self.spotsRepository.bindSpotsListener()
@@ -47,7 +50,12 @@ class AppViewModel {
             case .none:
                 self.spotsRepository.removeSpotsListener()
                 self.appState = .login
+                self.authMonitor.removeListener()
             }
+        }
+        
+        if Auth.auth().currentUser != nil {
+            authMonitor.listenToAuthState()
         }
     }
 }

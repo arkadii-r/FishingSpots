@@ -23,6 +23,7 @@ class Services {
     //
     // private(set) lazy var service: ServiceProtocol = Service()
 
+    private(set) lazy var authMonitor: AuthMonitor = AuthMonitor()
     private(set) lazy var authService: AuthService = AuthService()
     private(set) lazy var spotsRepository: SpotsRepository = SpotsRepository()
 }

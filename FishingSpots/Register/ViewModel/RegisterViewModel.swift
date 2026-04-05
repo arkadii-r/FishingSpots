@@ -19,6 +19,9 @@ class RegisterViewModel {
     @ObservationIgnored
     @Injected(\.authService) private var authService
     
+    @ObservationIgnored
+    @Injected(\.authMonitor) var authMonitor
+    
     var usernameText: String = ""
     var emailText: String = ""
     var passwordText: String = ""
@@ -40,7 +43,7 @@ class RegisterViewModel {
             isLoadingSignUp = false
             switch result {
             case .success:
-                break
+                authMonitor.listenToAuthState()
                 
             case let .failure(error):
                 self.errorText = error.localizedDescription
