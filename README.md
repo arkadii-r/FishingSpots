@@ -9,7 +9,7 @@ FishingSpots is a comprehensive iOS application designed for anglers to track, m
 - [Overview](#overview)
 - [Features](#features)
 - [Project Architecture](#project-architecture)
-- [File Structure and Components](#file-structure-and-components)
+- [Project Structure and File Documentation](#project-structure-and-file-documentation)
 - [Design Decisions](#design-decisions)
 - [Technology Stack](#technology-stack)
 
