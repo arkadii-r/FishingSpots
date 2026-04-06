@@ -49,7 +49,9 @@ final class MapViewModel {
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { spot in
                 self.newSpot = nil
-                self.selectedLocation = nil
+                let marker = GMSMarker(position: spot.coordinate)
+                marker.title = spot.name
+                self.selectedLocation = .marker(marker)
                 self.spotDetail = spot
             })
             .store(in: &cancellables)

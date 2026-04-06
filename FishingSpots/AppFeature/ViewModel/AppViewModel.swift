@@ -29,6 +29,12 @@ class AppViewModel {
     
     func onAppear() {
         bindAuthStateHandler()
+        
+        if Auth.auth().currentUser != nil {
+            authMonitor.listenToAuthState()
+        } else {
+            self.appState = .login
+        }
     }
     
     func bindAuthStateHandler() {
@@ -52,10 +58,6 @@ class AppViewModel {
                 self.appState = .login
                 self.authMonitor.removeListener()
             }
-        }
-        
-        if Auth.auth().currentUser != nil {
-            authMonitor.listenToAuthState()
         }
     }
 }

@@ -82,6 +82,7 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+            guard self.mapView.markers.contains(where: { $0.position == marker.position }) else { return false }
             self.mapView.selectedMarker = marker
             return self.mapView.markerTapHandler(marker)
         }
